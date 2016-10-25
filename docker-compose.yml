@@ -1,7 +1,25 @@
-Bind:
-  image: sameersbn/bind:latest
-  ports:
-    - "53:53/udp"
-  volumes:
-    - /srv/docker/bind:/data
-  restart: always
+version: "2"
+
+services:
+    bind:
+        image: sameersbn/bind:latest
+        ports:
+          - "53:53/tcp"
+          - "53:53/udp"
+          - "10000:10000/tcp"
+        volumes:
+          - /srv/docker/bind:/data
+        networks:
+            pk_vlan:
+                ipv4_address: 192.168.1.251
+        restart: always
+networks:
+    pk_vlan:
+        driver: bridge
+#        driver_opts:
+#            com.docker.network.enable_ipv6: "true"
+        ipam:
+            driver: default
+            config:
+              - subnet: 192.168.1.0/24
+                gateway: 192.168.1.1
